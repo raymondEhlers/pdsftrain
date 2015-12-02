@@ -1,0 +1,5 @@
+{
+    OUTPUT : "/project/projectdirs/alice",
+    VERSION : "V1"
+    NFILES: "10"
+}

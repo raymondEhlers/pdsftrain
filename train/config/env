@@ -1,0 +1,6 @@
+#! /bin/bash
+# perpare aliphysics module
+
+source /usr/share/Modules/init/bash
+module use /project/projectdirs/alice/mfasel/modulefiles
+module load mfasel/AliPhysics/master 
