@@ -9,7 +9,8 @@ from train.steer.config import ConfigHandler
 from train.steer.submit import Submitter
 
 def GetTag():
-    return "%s_%s" %(ConfigHandler.GetConfig().GetVersion(), time.strftime("%y%m%d_%H%M%S", time.localtime()));
+    config = ConfigHandler.GetConfig()
+    return "%s%s_%s" %(config.GetVersion(), config.GetName(), time.strftime("%y%m%d_%H%M%S", time.localtime()));
 
 def FindList(listname):
     dirs = listname.split("/")

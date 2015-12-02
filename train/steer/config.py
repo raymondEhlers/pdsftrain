@@ -35,6 +35,7 @@ class ConfigHandler(object):
 class Config(object):
     
     def __init__(self, filename = None):
+        self.__name                     = ""
         self.__version                  = "V1"
         self.__outputdir                = "/project/projectdirs/alice/"
         self.__splitlevel               = -1
@@ -44,7 +45,9 @@ class Config(object):
     def Initialize(self, jsonfile):
         jsontree = json.loads(self.__ReadConfigFile(jsonfile))
         for k, v in jsontree.iteritems():
-            if str(k).upper() == "VERSION":
+            if str(k).upper() == "NAME":
+                self.__name = v
+            elif str(k).upper() == "VERSION":
                 self.__version = v
             elif str(k).upper() == "OUTPUT":
                 self.__outputdir = v
@@ -62,6 +65,9 @@ class Config(object):
     def GetTrainOutputPath(self, doGlobal):
         userdir = os.path.join(getpass.getuser(), "train") if not doGlobal else "train"
         return os.path.join(self.__outputbase, userdir)
+    
+    def GetName(self):
+        return self.__name
     
     def GetVersion(self):
         return self.__version
