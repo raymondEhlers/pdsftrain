@@ -1,6 +1,6 @@
 {
-    NAME : "PbPb"
-    OUTPUT : "/project/projectdirs/alice",
-    VERSION : "V1"
-    NFILES: "10"
+    "NAME" : "PbPb",
+    "OUTPUT" : "/project/projectdirs/alice",
+    "VERSION" : "V1",
+    "NFILES" : 10
 }

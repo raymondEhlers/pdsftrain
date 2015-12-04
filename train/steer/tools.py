@@ -7,35 +7,27 @@ Created on 01.12.2015
 import os, time
 from train.steer.config import ConfigHandler
 from train.steer.submit import Submitter
+from __builtin__ import True
 
 def GetTag():
     config = ConfigHandler.GetConfig()
     return "%s%s_%s" %(config.GetVersion(), config.GetName(), time.strftime("%y%m%d_%H%M%S", time.localtime()));
 
 def FindList(listname):
-    dirs = listname.split("/")
     currentdir = ConfigHandler.GetTrainRoot()
+    files = FindFiles(os.path.join(currentdir, "filelists"))
     hasfound = False
-    for mydir in dirs:
-        content = os.listdir(currentdir)
-        if not len(content):
+    for f in files:
+        if listname in f:
+            hasfound = True
             break
-        if mydir in content:
-            currentdir = os.path.join(currentdir, mydir)
-            if os.path.isfile(currentdir): 
-                hasfound = True
-                break
     return hasfound
 
 def FindFiles(inputdir):
     result = []
-    mypath, mydirs, myfiles = os.walk(inputdir)
-    for f in myfiles:
-        result.append(os.path.join(mypath, f))
-    for d in mydirs:
-        found = FindFiles(os.path.join(mypath, d))
-        for f in found:
-            result.append(f)
+    for mypath, mydirs, myfiles in os.walk(inputdir):
+        for f in myfiles:
+            result.append(os.path.join(os.path.abspath(mypath), f))
     return result
 
 def GetLists(mode):
