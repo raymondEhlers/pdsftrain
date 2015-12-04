@@ -2,7 +2,13 @@
 
 TRAIN_ROOT=$1
 OUTPUT=$2
-MACRO=$3
+USER=$3
+FILELIST=$4
+NFILES=$5
+
+counter=$(echo "$SGE_TASK_ID - 1 | bc")
+MIN=$("echo $SGE_TASK_ID * $NFILES | bc")
+MAX=$("echo ($SGE_TASK_ID+1) * $NFILES | bc")
 
 starttime=$(date +%s)
 outputdir=$(printf "%s/job%d" $OUTPUT $SGE_TASK_ID)
@@ -11,7 +17,8 @@ echo $PWD
 
 source $TRAIN_ROOT/train/config/env
 
-cmd=$(printf "root -b -q \'%s(\"files.txt\")\' &> analysis.log" $MACRO)
+export TRAIN_ROOT=$TRAIN_ROOT
+cmd=$(printf "python %s/train/steer/runAnalysis.py %s %s %s %s &> analysis.log" $TRAIN_ROOT $USER $FILELIST $MIN $MAX)
 echo $cmd
 eval $cmd 
 endtime=$(date +%s)

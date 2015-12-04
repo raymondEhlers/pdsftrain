@@ -1,0 +1,28 @@
+{
+    "PbPb":
+    [
+        {
+            "NAME":"ClusterRef",
+            "MACRO":"AddTaskClustersRef.C"
+        }
+    ] ,
+    "pp":
+    [
+    ],
+    "pPb":
+    [
+    ],
+    "MC_PbPb":
+    [
+        {
+            "NAME":"ClusterRef",
+            "MACRO":"AddTaskClustersRef.C"
+        }
+    ],
+    "MC_pp":
+    [
+    ],
+    "MC_pPb":
+    [
+    ]
+}

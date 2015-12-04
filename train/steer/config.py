@@ -39,6 +39,8 @@ class Config(object):
         self.__version                  = "V1"
         self.__outputdir                = "/project/projectdirs/alice/"
         self.__splitlevel               = -1
+        self.__treename                 = ""
+        self.__handlers                 = []
         if filename:
             self.Initialize(filename)
         
@@ -53,6 +55,10 @@ class Config(object):
                 self.__outputdir = v
             elif str(k).upper() == "SPLITLEVEL":
                 self.__splitlevel = v
+            elif str(k).upper == "HANDLERS":
+                self.__handlers = v 
+            elif str(k).upper() == "TREENAME":
+                self.__treename = v
     
     def __ReadConfigFile(self, configfile):
         jsonstring = ""
@@ -74,4 +80,10 @@ class Config(object):
     
     def GetSplitLevel(self):
         return self.__splitlevel
+    
+    def GetTreename(self):
+        return self.__treename
+    
+    def GetHandlers(self):
+        return self.__handlers
     
