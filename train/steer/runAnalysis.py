@@ -80,7 +80,7 @@ def CreateChain(filelist, treename):
     return chain
 
 def CreateAnalysisManager():
-    mgr = ROOT.AnalysisManager("MGR")
+    mgr = ROOT.AliAnalysisManager("MGR")
     mgr.SetCommonFileName("AnalysisResults.root")
     return mgr
 
@@ -135,6 +135,7 @@ def runAnalysis(user, config, filelist, filemin, filemax):
         print "No files found to analyze"
         return
     if mgr.InitAnalysis():
+        mgr.PrintStatus()
         mgr.StartAnalysis("local", CreateChain(files, "esdTree"))
 
 if __name__ == "__main__":
