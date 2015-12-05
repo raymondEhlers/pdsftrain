@@ -49,7 +49,7 @@ class UserConfig(object):
     
 def ReadJSON(filename):
     result = ""
-    reader = open(filename, "R")
+    reader = open(filename, "r")
     for line in reader:
         myline = line.replace("\n").lstrip().rstrip()
         result += myline
@@ -111,7 +111,7 @@ def runAnalysis(user, config, filelist, filemin, filemax):
     ConfigHandler.LoadConfiguration(config)
     
     # Load additional libraries
-    ROOT.gROOT.Macro("%s/steer/macros/LoadLibs.C")
+    ROOT.gROOT.Macro("%s/steer/macros/LoadLibs.C" %ConfigHandler.GetTrainRoot())
     
     mgr = CreateAnalysisManager()
     CreateHandlers()
