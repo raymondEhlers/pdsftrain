@@ -2,8 +2,8 @@
     "PbPb":
     [
         {
-            "NAME":"EmcalPreparation",
-            "MACRO":"AddEmcalPreparationTasks.C",
+            "NAME":"EmcalQA",
+            "MACRO":"AddTaskEmcalQA.C",
             "STATUS":"Active"
         }
     ] ,
