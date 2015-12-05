@@ -11,6 +11,40 @@ from train.steer.config import ConfigHandler
 if __name__ == "__main__":
     sys.path.append(os.environ["TRAIN_ROOT"])
     
+class UserConfig(object):
+    
+    def __init__(self):
+        self.__name = ""
+        self.__macro = ""
+        self.__status = ""
+        
+    def Initialize(self, node):
+        for k,v in node.iteritems():
+            if k == "NAME":
+                self.__name = v
+            elif k == "MACRO":
+                self.__macro = v 
+            elif k == "STATUS":
+                self.__status = v
+    
+    def SetName(self, name):
+        self.__name = name
+    
+    def SetMacro(self, macro):
+        self.__macro = macro
+    
+    def SetStatus(self, status):
+        self.__status = status
+        
+    def GetName(self):
+        return self.__name
+    
+    def GetMacro(self):
+        return self.__macro
+    
+    def GetStatus(self):
+        return self.__status
+    
 def ReadJSON(filename):
     result = ""
     reader = open(filename, "R")
@@ -27,9 +61,15 @@ def ProcessUser(username):
     for myconf, tasks in configs.iteritems():
         if myconf == ConfigHandler.GetConfig().GetName():
             for task in tasks:
-                for k,v in task.iteritems():
-                    if k == "MACRO":
-                        ROOT.gROOT.Macro("%s/%s", os.environ["TRAIN_ROOT"], username, v)
+                taskconfig = UserConfig()
+                taskconfig.Initialize(task)
+                if taskconfig.GetStatus().upper() == "ACTIVE":
+                    if "$ALICE_ROOT" in taskconfig.GetMacro() or "$ALICE_PHYSICS" in taskconfig.GetMacro():
+                        # Load macro from AliRoot or AliPhysics
+                        ROOT.gROOT.Macro(taskconfig.GetMacro())
+                    else:
+                        # Load macro from user directory
+                        ROOT.gROOT.Macro("%s/%s", ConfigHandler.GetTrainRoot(), username, taskconfig.GetMacro())
 
 def CreateChain(filelist, treename):
     chain = ROOT.TChain(treename, "")
