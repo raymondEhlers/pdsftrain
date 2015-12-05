@@ -3,4 +3,5 @@
 
 source /usr/share/Modules/init/bash
 module use /project/projectdirs/alice/mfasel/modulefiles
-module load mfasel/AliPhysics/master 
+module load mfasel/fastjet_with_cgal/v3.0.6
+module load mfasel/aliphysics/master 

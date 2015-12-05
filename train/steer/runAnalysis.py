@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 '''
 Created on 04.12.2015
 
@@ -6,10 +7,11 @@ Created on 04.12.2015
 import os, sys
 import json
 import ROOT
-from train.steer.config import ConfigHandler
 
 if __name__ == "__main__":
     sys.path.append(os.environ["TRAIN_ROOT"])
+
+from train.steer.config import ConfigHandler
     
 class UserConfig(object):
     
@@ -136,4 +138,4 @@ def runAnalysis(user, config, filelist, filemin, filemax):
         mgr.StartAnalysis("local", CreateChain(files, "esdTree"))
 
 if __name__ == "__main__":
-    runAnalysis(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    runAnalysis(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
