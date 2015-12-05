@@ -3,7 +3,8 @@
     [
         {
             "NAME":"ClusterRef",
-            "MACRO":"AddTaskClustersRef.C"
+            "MACRO":"AddTaskClustersRef.C",
+            "STATUS":"Active"
         }
     ] ,
     "pp":
@@ -16,7 +17,8 @@
     [
         {
             "NAME":"ClusterRef",
-            "MACRO":"AddTaskClustersRef.C"
+            "MACRO":"AddTaskClustersRef.C",
+            "STATUS":"Inactive"
         }
     ],
     "MC_pp":
