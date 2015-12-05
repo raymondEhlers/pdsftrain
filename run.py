@@ -5,12 +5,12 @@ Created on 01.12.2015
 '''
 
 import getopt, os, sys
-from train.steer.tools import GetWorkdir, SubmitBatch, FindList, GetLists
-from train.steer.config import ConfigHandler
-
 
 if __name__ == "__main__":
     sys.path.append(os.path.dirname(sys.argv[0]))
+
+from train.steer.tools import GetWorkdir, SubmitBatch, FindList, GetLists
+from train.steer.config import ConfigHandler
 
 def Usage():
     print "Usage: ./run.py [MODE] [OPITONS]"
