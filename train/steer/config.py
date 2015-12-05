@@ -50,18 +50,21 @@ class Config(object):
     def Initialize(self, jsonfile):
         jsontree = json.loads(self.__ReadConfigFile(jsonfile))
         for k, v in jsontree.iteritems():
-            if str(k).upper() == "NAME":
+            key = str(k).upper().lstrip().rstrip()
+            if key == "NAME":
                 self.__name = v
-            elif str(k).upper() == "VERSION":
+            elif key == "VERSION":
                 self.__version = v
-            elif str(k).upper() == "OUTPUT":
+            elif key == "OUTPUT":
                 self.__outputdir = v
-            elif str(k).upper() == "SPLITLEVEL":
+            elif key == "SPLITLEVEL":
                 self.__splitlevel = v
-            elif str(k).upper == "HANDLERS":
-                self.__handlers = v 
-            elif str(k).upper() == "TREENAME":
+            elif key == "HANDLERS":
+                for en in v:
+                    self.__handlers.append(str(en)) 
+            elif key == "TREENAME":
                 self.__treename = v
+        self.Print()
     
     def __ReadConfigFile(self, configfile):
         jsonstring = ""
@@ -73,7 +76,7 @@ class Config(object):
 
     def GetTrainOutputPath(self, doGlobal):
         userdir = os.path.join(getpass.getuser(), "train") if not doGlobal else "train"
-        return os.path.join(self.__outputbase, userdir)
+        return os.path.join(self.__outputdir, userdir)
     
     def GetName(self):
         return self.__name
@@ -90,3 +93,14 @@ class Config(object):
     def GetHandlers(self):
         return self.__handlers
     
+    def Print(self):
+        print "Configuration:"
+        print "Name:          %s" %self.__name
+        print "Version:       %s" %self.__version
+        print "Tree:          %s" %self.__treename
+        print "Splitlevel:    %d" %self.__splitlevel
+        print "output:        %s" %self.__outputdir
+        print "Handlers:"
+        for handler in self.__handlers:
+                print "        %s" %handler
+

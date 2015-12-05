@@ -1,8 +1,10 @@
 void AddEmcalPreparationTasks(){
 	AliAnalysisManager *mgr = AliAnalysisManager::GetAnalysisManager();
 
+  printf("Loading setup task\n");
+  printf("ALICE_PHYSICS: %s\n", gSystem->Getenv("ALICE_PHYSICS"));
 	gROOT->LoadMacro(Form("%s/PWG/EMCAL/macros/AddTaskEmcalSetup.C", gSystem->Getenv("ALICE_PHYSICS")));
-	//AliEmcalSetupTask *setupTask = AddTaskEmcalSetup();
+	AliEmcalSetupTask *setupTask = AddTaskEmcalSetup();
 	setupTask->SetOcdbPath("local:///cvmfs/alice-ocdb.cern.ch/calibration/data/2015/OCDB");
 	//setupTask->SetOcdbPath("raw://");
 

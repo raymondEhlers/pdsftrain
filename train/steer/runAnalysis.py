@@ -51,7 +51,7 @@ def ReadJSON(filename):
     result = ""
     reader = open(filename, "r")
     for line in reader:
-        myline = line.replace("\n").lstrip().rstrip()
+        myline = line.replace("\n", "").lstrip().rstrip()
         result += myline
     reader.close()
     return result
@@ -71,7 +71,7 @@ def ProcessUser(username):
                         ROOT.gROOT.Macro(taskconfig.GetMacro())
                     else:
                         # Load macro from user directory
-                        ROOT.gROOT.Macro("%s/%s", ConfigHandler.GetTrainRoot(), username, taskconfig.GetMacro())
+                        ROOT.gROOT.Macro("%s/%s/%s" %(ConfigHandler.GetTrainRoot(), username, taskconfig.GetMacro()))
 
 def CreateChain(filelist, treename):
     chain = ROOT.TChain(treename, "")
@@ -85,22 +85,24 @@ def CreateAnalysisManager():
     return mgr
 
 def CreateHandlers():
-    for hadler in ConfigHandler.GetConfig().GetHandlers():
-        ROOT.gROOT.Macro(hadler)
+    for handler in ConfigHandler.GetConfig().GetHandlers():
+        ROOT.gROOT.Macro(handler)
 
 def ReadFileList(inputfile, mymin, mymax):
+    print "Reading file %s from %s to %s" %(inputfile, mymin, mymax)
     result = []
     reader = open(inputfile)
     counter = 0
     for line in reader:
         newline = line.replace("\n", "").lstrip().rstrip()
-        if not len(line):
+        if not len(newline):
             continue
-        if min > 0 and counter < mymin:
+        if mymin > -1 and counter < mymin:
             counter += 1
             continue
-        if max > 0 and counter >= max:
+        if mymax > 0 and counter >= mymax:
             break
+        print "Accepted %s" %(newline)
         result.append(newline)
         counter += 1
     reader.close()
@@ -111,7 +113,7 @@ def runAnalysis(user, config, filelist, filemin, filemax):
     ConfigHandler.LoadConfiguration(config)
     
     # Load additional libraries
-    ROOT.gROOT.Macro("%s/steer/macros/LoadLibs.C" %ConfigHandler.GetTrainRoot())
+    ROOT.gROOT.Macro("%s/train/macros/LoadLibs.C" %ConfigHandler.GetTrainRoot())
     
     mgr = CreateAnalysisManager()
     CreateHandlers()
@@ -130,7 +132,7 @@ def runAnalysis(user, config, filelist, filemin, filemax):
             ProcessUser(myuser)
         userreader.close()
         
-    files = ReadFileList(filelist, filemin, filemax)
+    files = ReadFileList(os.path.join(ConfigHandler.GetTrainRoot(), "train", "filelists", filelist), filemin, filemax)
     if not len(files):
         print "No files found to analyze"
         return
@@ -139,4 +141,4 @@ def runAnalysis(user, config, filelist, filemin, filemax):
         mgr.StartAnalysis("local", CreateChain(files, "esdTree"))
 
 if __name__ == "__main__":
-    runAnalysis(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+    runAnalysis(sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4]), int(sys.argv[5]))
