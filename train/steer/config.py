@@ -14,22 +14,25 @@ class ConfigHandler(object):
     
     @staticmethod
     def LoadConfiguration(mode):
+        global gConfig
         if not gConfig and mode != gMode:
             gConfig = Config(os.path.join(gTrainRoot, "steer", "config", "config_%s.json" %mode))
     
     @staticmethod
     def GetConfig():
+        global gConfig
         if not gConfig:
             raise Exception("Config not set")
         return gConfig 
     
     @staticmethod
     def GetTrainRoot():
+        global gTrainRoot
         return gTrainRoot
-    
     
     @staticmethod
     def SetTrainRoot(trainroot):
+        global gTrainRoot
         gTrainRoot = trainroot
     
 class Config(object):
