@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 '''
 Created on 01.12.2015
 
@@ -24,12 +25,14 @@ def Usage():
     print " "
     print "  Options:"
     print "    -u|--user: Run for a special user"
+    print "    -c|--config: Configuration"
     print "    -l|--list: Run on a special file list"
     print "    -s|--splitlevel: Number of files per job"
     print "    -n|--nchunk: Number of chunks"
     print "    -m|--minchunk: Minimum chunk (local running mode)"
     print "    -i|--inputdir: Inputdir (for merging)"
     print "    -f|--filename: Filename: (for merging)"
+    print "    -d|--debug: Debug mode (printing debug messages)" 
     print "    -h|--help: Print help"
     
 
@@ -41,7 +44,11 @@ def main(argc, argv):
         Usage()
         sys.exit(1)
 
-    opt, arg = getopt.getopt(argv, "u:c:l:s:n:i:f:h", ["user=", "configuration=", "list=", "splitlevel=" , "nchunk=" "inputdir=", "filename=", "help"]) 
+    if mode == "local" and not "ALICE_PHYSICS" in os.environ.keys():
+        print "For running in local mode please source [TRAIN_ROOT]/train/config/env before running"
+        sys.exit(1)
+
+    opt,arg = getopt.getopt(argv[2:], "u:c:l:s:n:m:i:f:hd", ["user=", "config=", "list=", "splitlevel=" , "nchunk=", "minchunk=", "inputdir=", "filename=", "help", "debug"]) 
     
     userdir = "all"
     filelist=""
@@ -51,6 +58,7 @@ def main(argc, argv):
     filename = ""
     nchunk = -1
     filemin = 0
+    debug = False
     for o,a in opt:
         if o in ("-u", "--user"):
             userdir = str(a)
@@ -66,6 +74,10 @@ def main(argc, argv):
             splitlevel = int(a)
         elif o in ("-n", "--nchunck"):
             nchunk = int(a)
+        elif o in ("-m", "--minchunk"):
+            filemin = int(a)
+        elif o in ("-d", "--debug"):
+            debug = True
         elif o in ("-h", "--help"):
             Usage()
             sys.exit(1)
@@ -79,48 +91,61 @@ def main(argc, argv):
     if splitlevel < 0:
         splitlevel = ConfigHandler.GetConfig().GetSplitLevel()
 
-    if mode in modes[0:1]:
+    if mode == "batch":
         # prepare job submission
         workdir = GetWorkdir(True if mode == "train" else False)
         if len(filelist): # run over one file
-            if FindList(FindList):
+            if FindList(filelist):
                 # create outputdir and copy train_root to that localtion
                 os.makedirs(workdir, 0755)
                 jobtrainroot = os.path.join(workdir, "TRAIN")
-                shutil.copy(ConfigHandler.GetTrainRoot(), jobtrainroot)
+                shutil.copytree(ConfigHandler.GetTrainRoot(), jobtrainroot)
                 tags = filelist.split("/")
                 outputdir = workdir
                 for tag in tags:
                     if tag == config:
                         continue
                     if ".txt" in tag:
+                        outputdir = os.path.join(outputdir, tag.replace(".txt",""))
                         break
                     outputdir = os.path.join(outputdir, tag)
                 os.makedirs(outputdir, 0755)
-                SubmitBatch(outputdir, jobtrainroot, filelist, splitlevel, nchunk, userdir)
+                # for debugging
+                if debug:
+                    print "Submitting batch job:"
+                    print "============================="
+                    print "Output location:             %s" %outputdir
+                    print "Configuration:               %s" %ConfigHandler.GetConfig().GetName()
+                    print "Users:                       %s" %userdir
+                    print "Number of chunks:            %s" %nchunk
+                    print "Split level:                 %s" %splitlevel
+                    print "Using custom train root location %s" %jobtrainroot
+                else:
+                    SubmitBatch(outputdir, jobtrainroot, filelist, splitlevel, nchunk, userdir)
             else:
-                print "List %s not found in your TRAIN_ROOT installation"
+                print "List %s not found in your TRAIN_ROOT installation" %filelist
         else:
-            os.makedirs(workdir, 0755)
-            jobtrainroot = os.path.join(workdir, "TRAIN")
-            shutil.copy(ConfigHandler.GetTrainRoot(), jobtrainroot)
+            "Batch mode - please specify an input list"
+    elif mode == "train":
+        os.makedirs(workdir, 0755)
+        jobtrainroot = os.path.join(workdir, "TRAIN")
+        shutil.copy(ConfigHandler.GetTrainRoot(), jobtrainroot)
             
-            # run over all files
-            filelists = GetLists(config)
-            for myfilelist in filelists:
-                tags = myfilelist.split("/")
-                outputdir = workdir
-                for tag in tags:
-                    if ".txt" in tag:
-                        break
-                    outputdir = os.path.join(outputdir, tag)
-                os.makedirs(outputdir, 0755)
-                SubmitBatch(outputdir, jobtrainroot, myfilelist, splitlevel, nchunk, userdir)
+        # run over all files
+        filelists = GetLists(config)
+        for myfilelist in filelists:
+            tags = myfilelist.split("/")
+            outputdir = workdir
+            for tag in tags:
+                if ".txt" in tag:
+                    outputdir = os.path.join(outputdir, tag.replace(".txt",""))
+                    break
+                outputdir = os.path.join(outputdir, tag)
+            os.makedirs(outputdir, 0755)
+            SubmitBatch(outputdir, jobtrainroot, myfilelist, splitlevel, nchunk, userdir)
     elif mode == "merge":
         pass
     elif mode == "local":
-        if not os.environ["ALICE_PHYSICS"]:
-            os.system("source %s/train/config/env" %(ConfigHandler.GetTrainRoot()))
         runAnalysis(userdir, config, filelist, filemin, filemin+nchunk)    
                 
 
