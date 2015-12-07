@@ -18,21 +18,26 @@ class Submitter():
         self.__nchunk = nchunk
     
     def Submit(self):
-        jobs = int(self.GetNfiles()) / self.__splitlevel + 1
+        jobs = self.__nchunk
+        if jobs < 0:
+            jobs = int(self.GetNfiles()) / self.__splitlevel + 1
+        for j in range(0, jobs):
+            os.makedirs(os.path.join(self.__outputdir, "job%d" %j))
         qsub = "qsub -l \"projectio=1,h_vmem=4G\" -t 1:%d" %jobs
         qsub += " " + self.__GetLogging()
         qsub += " " + self.__GetExecutable()
+        #print "Here I would do %s" %qsub
         os.system(qsub)
         
     def __GetExecutable(self):
-        return "%s %s %s %s %s %s" %(os.path.join(self.__jobtrainroot, "steer", "jobscript.sh"), self.__jobtrainroot, ConfigHandler.GetConfig().GetName(), self.__outputdir, self.__user, self.__inputlist, self.__splitlevel)
+        return "%s %s %s %s %s %s %s" %(os.path.join(self.__jobtrainroot, "train", "steer", "jobscript.sh"), self.__jobtrainroot, ConfigHandler.GetConfig().GetName(), self.__outputdir, self.__user, self.__inputlist, self.__splitlevel)
     
     def __GetLogging(self):
         return "-j y -o %s/job\$TASK_ID/joboutput.log" %self.__outputdir
        
     def GetNfiles(self): 
         nfiles = 0
-        reader = open(self.__jobtrainroot, 'r')
+        reader = open(os.path.join(self.__jobtrainroot, "train", "filelists", self.__inputlist), 'r')
         for line in reader:
             newline = line.replace("\n", "").lstrip().rstrip()
             if not len(newline):

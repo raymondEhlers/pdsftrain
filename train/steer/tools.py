@@ -7,15 +7,14 @@ Created on 01.12.2015
 import os, time
 from train.steer.config import ConfigHandler
 from train.steer.submit import Submitter
-from __builtin__ import True
 
 def GetTag():
     config = ConfigHandler.GetConfig()
-    return "%s%s_%s" %(config.GetVersion(), config.GetName(), time.strftime("%y%m%d_%H%M%S", time.localtime()));
+    return "%s.%s/%s" %(config.GetVersion(), config.GetName(), time.strftime("%y%m%d_%H%M%S", time.localtime()));
 
 def FindList(listname):
     currentdir = ConfigHandler.GetTrainRoot()
-    files = FindFiles(os.path.join(currentdir, "filelists"))
+    files = FindFiles(os.path.join(currentdir, "train", "filelists"))
     hasfound = False
     for f in files:
         if listname in f:

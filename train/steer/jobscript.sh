@@ -19,7 +19,7 @@ echo $PWD
 source $TRAIN_ROOT/train/config/env
 
 export TRAIN_ROOT=$TRAIN_ROOT
-cmd=$(printf "python %s/train/steer/runAnalysis.py %s %s %s %s &> analysis.log" $TRAIN_ROOT $USER $CONFIG $FILELIST $MIN $MAX)
+cmd=$(printf "python %s/train/steer/runAnalysis.py %s %s %s/train/filelists/%s %s %s &> analysis.log" $TRAIN_ROOT $USER $CONFIG $TRAIN_ROOT $FILELIST $MIN $MAX)
 echo $cmd
 eval $cmd 
 endtime=$(date +%s)
