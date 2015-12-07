@@ -138,7 +138,7 @@ def runAnalysis(user, config, filelist, filemin, filemax):
         return
     if mgr.InitAnalysis():
         mgr.PrintStatus()
-        mgr.StartAnalysis("local", CreateChain(files, "esdTree"))
+        mgr.StartAnalysis("local", CreateChain(files, ConfigHandler.GetConfig().GetTreename()))
 
 if __name__ == "__main__":
     runAnalysis(sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4]), int(sys.argv[5]))
