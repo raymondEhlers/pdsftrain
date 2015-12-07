@@ -43,11 +43,11 @@ def GetLists(mode):
             filelists.append(test)
     return filelists
     
-def SubmitBatch(outputdir, filelist, splitlevel, chunks, macro):
-    submitter = Submitter(filelist, outputdir, splitlevel, macro)
+def SubmitBatch(outputdir, jobtrainroot, filelist, splitlevel, chunks, user):
+    submitter = Submitter(filelist, jobtrainroot, outputdir, splitlevel)
     if chunks >= 0:
         submitter.SetNchunk(chunks)
-    submitter.Split()
+    submitter.SetUser(user)
     submitter.Submit()
         
 
