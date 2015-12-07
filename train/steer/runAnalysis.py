@@ -109,9 +109,6 @@ def ReadFileList(inputfile, mymin, mymax):
     return result
 
 def runAnalysis(user, config, filelist, filemin, filemax):
-    ConfigHandler.SetTrainRoot(os.environ["TRAIN_ROOT"])
-    ConfigHandler.LoadConfiguration(config)
-    
     # Load additional libraries
     ROOT.gROOT.Macro("%s/train/macros/LoadLibs.C" %ConfigHandler.GetTrainRoot())
     
@@ -141,4 +138,6 @@ def runAnalysis(user, config, filelist, filemin, filemax):
         mgr.StartAnalysis("local", CreateChain(files, ConfigHandler.GetConfig().GetTreename()))
 
 if __name__ == "__main__":
+    ConfigHandler.SetTrainRoot(os.environ["TRAIN_ROOT"])
+    ConfigHandler.LoadConfiguration(config)
     runAnalysis(sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4]), int(sys.argv[5]))
