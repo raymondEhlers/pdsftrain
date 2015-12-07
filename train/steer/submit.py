@@ -3,56 +3,40 @@ from train.steer.config import ConfigHandler
     
 class Submitter():
     
-    def __init__(self, inputlist, outputdir, splitlevel, macro):
+    def __init__(self, inputlist, jobtrainroot, outputdir, splitlevel):
         self.__inputlist = inputlist
+        self.__jobtrainroot = jobtrainroot
         self.__outputdir = outputdir
         self.__nchunk = -1
         self.__splitlevel = splitlevel
-        self.__macro = macro
+        self.__user = "all"
+        
+    def SetUser(self, user):
+        self.__user = user
         
     def SetNchunk(self, nchunk):
         self.__nchunk = nchunk
     
     def Submit(self):
-        jobs = self.Split()
+        jobs = int(self.GetNfiles()) / self.__splitlevel + 1
         qsub = "qsub -l \"projectio=1,h_vmem=4G\" -t 1:%d" %jobs
         qsub += " " + self.__GetLogging()
         qsub += " " + self.__GetExecutable()
         os.system(qsub)
         
     def __GetExecutable(self):
-        return "%s %s %s %s" %(os.path.join(self.__data.GetTrainRoot(), "steer", "jobscript.sh"), ConfigHandler.GetTrainRoot(), self.__outputdir, self.__macro)
+        return "%s %s %s %s %s %s" %(os.path.join(self.__jobtrainroot, "steer", "jobscript.sh"), self.__jobtrainroot, ConfigHandler.GetConfig().GetName(), self.__outputdir, self.__user, self.__inputlist, self.__splitlevel)
     
     def __GetLogging(self):
         return "-j y -o %s/job\$TASK_ID/joboutput.log" %self.__outputdir
-        
-    def Split(self):
-        chunk = 1
-        chunkfile = 0 
-        outputpath = os.path.join(self, self.__outputdir, "job%d" %chunk)
-        os.makedirs(outputpath, 0755)
-        outputfile = os.path.join(outputpath, "files.txt")
-        reader = open(self.__inputlist, 'r')
-        writer = open(outputfile, 'w')
+       
+    def GetNfiles(self): 
+        nfiles = 0
+        reader = open(self.__jobtrainroot, 'r')
         for line in reader:
-            writer.write(line)
-            chunkfile += 1
-            if chunkfile >= self.__splitlevel:
-                writer.close()
-                chunk += 1
-                if self.__nchunk > -1 and chunk >= self.__nchunk:
-                    # Stop in case we exceeded the number of chunks requested
-                    reader.close()
-                    writer = None
-                    reader = None
-                    break
-                outputpath = os.path.join(self.__outputdir, "job%d" %chunk)
-                os.makedirs(outputpath, 0755)
-                outputfile = os.path.join(outputpath, "files.txt")
-                writer = open(outputfile, 'w')
-                chunkfile = 0
-        if reader:
-            reader.close()
-        if writer:
-            writer.close()
-        return chunk
+            newline = line.replace("\n", "").lstrip().rstrip()
+            if not len(newline):
+                continue
+            nfiles += 1
+        reader.close()
+        return nfiles

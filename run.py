@@ -5,12 +5,14 @@ Created on 01.12.2015
 '''
 
 import getopt, os, sys
+import shutil
 
 if __name__ == "__main__":
     sys.path.append(os.path.dirname(sys.argv[0]))
 
 from train.steer.tools import GetWorkdir, SubmitBatch, FindList, GetLists
 from train.steer.config import ConfigHandler
+from train.steer.runAnalysis import runAnalysis
 
 def Usage():
     print "Usage: ./run.py [MODE] [OPITONS]"
@@ -25,7 +27,7 @@ def Usage():
     print "    -l|--list: Run on a special file list"
     print "    -s|--splitlevel: Number of files per job"
     print "    -n|--nchunk: Number of chunks"
-    print "    -m|--macro: Macro to run"
+    print "    -m|--minchunk: Minimum chunk (local running mode)"
     print "    -i|--inputdir: Inputdir (for merging)"
     print "    -f|--filename: Filename: (for merging)"
     print "    -h|--help: Print help"
@@ -39,16 +41,16 @@ def main(argc, argv):
         Usage()
         sys.exit(1)
 
-    opt, arg = getopt.getopt(argv, "u:c:l:s:m:n:i:f:h", ["user=", "configuration=", "list=", "splitlevel=" , "macro=", "nchunk=" "inputdir=", "filename=", "help"]) 
+    opt, arg = getopt.getopt(argv, "u:c:l:s:n:i:f:h", ["user=", "configuration=", "list=", "splitlevel=" , "nchunk=" "inputdir=", "filename=", "help"]) 
     
-    userdir = ""
+    userdir = "all"
     filelist=""
     inputdir=""
     splitlevel=-1
     config = ""
-    chunks = -1
-    macro = ""
     filename = ""
+    nchunk = -1
+    filemin = 0
     for o,a in opt:
         if o in ("-u", "--user"):
             userdir = str(a)
@@ -58,8 +60,6 @@ def main(argc, argv):
             filelist = str(a)
         elif o in ("-i", "--input"):
             inputdir = str(a)
-        elif o in ("-m", "--macro"):
-            macro = str(a)
         elif o in ("-f", "--filename"):
             filename = str(a)
         elif o in ("-s", "--splitlevel"):
@@ -84,6 +84,10 @@ def main(argc, argv):
         workdir = GetWorkdir(True if mode == "train" else False)
         if len(filelist): # run over one file
             if FindList(FindList):
+                # create outputdir and copy train_root to that localtion
+                os.makedirs(workdir, 0755)
+                jobtrainroot = os.path.join(workdir, "TRAIN")
+                shutil.copy(ConfigHandler.GetTrainRoot(), jobtrainroot)
                 tags = filelist.split("/")
                 outputdir = workdir
                 for tag in tags:
@@ -93,8 +97,14 @@ def main(argc, argv):
                         break
                     outputdir = os.path.join(outputdir, tag)
                 os.makedirs(outputdir, 0755)
-                SubmitBatch(outputdir, filelist, splitlevel, chunks, macro)
+                SubmitBatch(outputdir, jobtrainroot, filelist, splitlevel, nchunk, userdir)
+            else:
+                print "List %s not found in your TRAIN_ROOT installation"
         else:
+            os.makedirs(workdir, 0755)
+            jobtrainroot = os.path.join(workdir, "TRAIN")
+            shutil.copy(ConfigHandler.GetTrainRoot(), jobtrainroot)
+            
             # run over all files
             filelists = GetLists(config)
             for myfilelist in filelists:
@@ -105,9 +115,13 @@ def main(argc, argv):
                         break
                     outputdir = os.path.join(outputdir, tag)
                 os.makedirs(outputdir, 0755)
-                SubmitBatch(outputdir, myfilelist, splitlevel, chunks, macro)
+                SubmitBatch(outputdir, jobtrainroot, myfilelist, splitlevel, nchunk, userdir)
     elif mode == "merge":
         pass
+    elif mode == "local":
+        if not os.environ["ALICE_PHYSICS"]:
+            os.system("source %s/train/config/env" %(ConfigHandler.GetTrainRoot()))
+        runAnalysis(userdir, config, filelist, filemin, filemin+nchunk)    
                 
 
 if __name__ == '__main__':
