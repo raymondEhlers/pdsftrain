@@ -54,7 +54,7 @@ void AddEmcalPreparationTasks(){
 	//gROOT->Macro(Form("%s/OADB/macros/AddTaskCentrality.C", gSystem->Getenv("ALICE_PHYSICS")));
 
 	gROOT->LoadMacro(Form("%s/PWG/EMCAL/macros/AddTaskEmcalTriggerMakerNew.C", gSystem->Getenv("ALICE_PHYSICS")));
-	AliEmcalTriggerMakerTask *triggermaker = AddTaskEmcalTriggerMakerNew("EmcalTriggers",0,0,"AliEmcalTriggerMaker",0,0,0,0,0,0,0,0,0,0,0,0,0,1);
+	AliEmcalTriggerMakerTask *triggermaker = AddTaskEmcalTriggerMakerNew("EmcalTriggers",0,0,"AliEmcalTriggerMaker",8,0,0,0,0,0,0,0,0,0,0,0,0,0,1);
 	triggermaker->SetUseTriggerBitConfig(AliEmcalTriggerMaker::kNewConfig);
 	triggermaker->SetForceBeamType(AliAnalysisTaskEmcal::kpp);
 
