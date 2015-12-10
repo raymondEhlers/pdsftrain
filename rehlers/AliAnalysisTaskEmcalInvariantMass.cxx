@@ -292,6 +292,7 @@ void AliAnalysisTaskEmcalInvariantMass::ExecOnce() {
 //________________________________________________________________________
 Bool_t AliAnalysisTaskEmcalInvariantMass::Run()
 {
+    Printf("Inside invariant mass task!");
     // Run analysis code here, if needed. It will be executed before FillHistograms().
 
     return kTRUE;  // If return kFALSE FillHistogram() will NOT be executed.
