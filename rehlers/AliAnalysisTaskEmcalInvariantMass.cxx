@@ -11,6 +11,7 @@
 #include <TH3F.h>
 #include <TList.h>
 #include <TLorentzVector.h>
+#include <TMath.h>
 
 #include "AliVCluster.h"
 #include "AliAODCaloCluster.h"
