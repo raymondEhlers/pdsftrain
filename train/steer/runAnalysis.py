@@ -5,6 +5,7 @@ Created on 04.12.2015
 @author: markusfasel
 '''
 import os, sys
+import shutil
 import json
 import ROOT
 
@@ -74,10 +75,14 @@ def ReadJSON(filename):
 
 def BuildUser(username, filename):
     currentdir = os.getcwd()
+    builddir = os.path.join(currentdir, "build")
+    if not os.path.exists(builddir):
+        os.makedirs(builddir, 0755)
+    os.chdir(builddir)
     userdir = os.path.join(ConfigHandler.GetTrainRoot(), username)
-    os.chdir(userdir)
+    shutil.copyfile(os.path.join(userdir, filename), os.path.join(os.getcwd(), filename))
     ROOT.gSystem.AddIncludePath("-I%s" %userdir)
-    ROOT.gROOT.LoadMacro("%s++" %os.path.join(userdir, filename))
+    ROOT.gROOT.LoadMacro("%s++" %filename)
     os.chdir(currentdir)
 
 def ProcessUser(username):
@@ -143,8 +148,8 @@ def ReadFileList(inputfile, mymin, mymax):
 def runAnalysis(user, config, filelist, filemin, filemax):
     # Load additional libraries
     ROOT.gROOT.Macro("%s/train/macros/LoadLibs.C" %ConfigHandler.GetTrainRoot())
-    ROOT.gSystem.AddIncludePath("-I%s" %os.getenv("ALICE_ROOT"))
-    ROOT.gSystem.AddIncludePath("-I%s" %os.getenv("ALICE_PHYSICS"))
+    ROOT.gSystem.AddIncludePath("-I%s/include" %os.getenv("ALICE_ROOT"))
+    ROOT.gSystem.AddIncludePath("-I%s/include" %os.getenv("ALICE_PHYSICS"))
     
     mgr = CreateAnalysisManager()
     CreateHandlers()
