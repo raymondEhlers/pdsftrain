@@ -4,6 +4,7 @@
         {
             "NAME":"EmcalInvariantMass",
             "MACRO":"AddTaskInvariantMass.C",
+            "SOURCES":["AliAnalysisTaskEmcalInvariantMass.cxx"],
             "STATUS":"Active"
         }
     ] ,
