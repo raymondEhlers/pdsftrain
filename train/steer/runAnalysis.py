@@ -20,6 +20,7 @@ class UserConfig(object):
         self.__macro = ""
         self.__arguments = ""
         self.__status = ""
+        self.__sources = []
         
     def Initialize(self, node):
         for k,v in node.iteritems():
@@ -31,6 +32,9 @@ class UserConfig(object):
                 self.__arguments = v
             elif k == "STATUS":
                 self.__status = v
+            elif k == "SOURCES":
+                for source in v:
+                    self.__sources.append(source)
     
     def SetName(self, name):
         self.__name = name
@@ -56,6 +60,9 @@ class UserConfig(object):
     def GetStatus(self):
         return self.__status
     
+    def GetSources(self):
+        return self.__sources
+    
 def ReadJSON(filename):
     result = ""
     reader = open(filename, "r")
@@ -64,6 +71,14 @@ def ReadJSON(filename):
         result += myline
     reader.close()
     return result
+
+def BuildUser(username, filename):
+    currentdir = os.getcwd()
+    userdir = os.path.join(ConfigHandler.GetTrainRoot(), username)
+    os.chdir(userdir)
+    ROOT.gSystem.AddIncludePath("-I%s" %userdir)
+    ROOT.gROOT.LoadMacro("%s++" %os.path.join(userdir, filename))
+    os.chdir(currentdir)
 
 def ProcessUser(username):
     userdir = os.path.join(ConfigHandler.GetTrainRoot(), username)
@@ -75,6 +90,9 @@ def ProcessUser(username):
                 taskconfig = UserConfig()
                 taskconfig.Initialize(task)
                 if taskconfig.GetStatus().upper() == "ACTIVE":
+                    if len(taskconfig.GetSources()):
+                        for source in taskconfig.GetSources():
+                            BuildUser(username, source)
                     macroname = ""
                     if "$ALICE_ROOT" in taskconfig.GetMacro() or "$ALICE_PHYSICS" in taskconfig.GetMacro():
                         # Load macro from AliRoot or AliPhysics
@@ -125,6 +143,8 @@ def ReadFileList(inputfile, mymin, mymax):
 def runAnalysis(user, config, filelist, filemin, filemax):
     # Load additional libraries
     ROOT.gROOT.Macro("%s/train/macros/LoadLibs.C" %ConfigHandler.GetTrainRoot())
+    ROOT.gSystem.AddIncludePath("-I%s" %os.getenv("ALICE_ROOT"))
+    ROOT.gSystem.AddIncludePath("-I%s" %os.getenv("ALICE_PHYSICS"))
     
     mgr = CreateAnalysisManager()
     CreateHandlers()
