@@ -1,8 +1,8 @@
 void AddTaskInvariantMass()
 {
     // Should probably change this to TRAIN_ROOT
-    //const char * trainRoot = gSystem->Getenv("TRAIN_ROOT");
-    const char * trainRoot = gSystem->Getenv("PWD");
+    const char * trainRoot = gSystem->Getenv("TRAIN_ROOT");
+    //const char * trainRoot = gSystem->Getenv("PWD");
     Printf("Train root: %s", trainRoot);
     if (trainRoot != 0)
     {
