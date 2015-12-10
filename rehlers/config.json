@@ -3,7 +3,7 @@
     [
         {
             "NAME":"EmcalInvariantMass",
-            "MACRO":"AddTaskEmcalInvariantMass.C",
+            "MACRO":"AddTaskInvariantMass.C",
             "STATUS":"Inactive"
         }
     ] ,
