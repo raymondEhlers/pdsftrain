@@ -94,7 +94,7 @@ void AliAnalysisTaskEmcalInvariantMass::UserCreateOutputObjects()
 
     //TString histname;
 
-    fInvariantMassHists = new THistManager("invariantMass");
+    fInvariantMassHists = new THistManager("InvariantMass");
 
     Int_t bins[4] = {150, 50, 20, 50};
     Double_t xmin[4] = {0., -5, -5, 0.};
@@ -111,8 +111,8 @@ void AliAnalysisTaskEmcalInvariantMass::UserCreateOutputObjects()
           }*/
 
         if (fClusterCollArray.GetEntriesFast()>0) {
-            fInvariantMassHists->CreateTH1(Form("hInvariantMassLow_%i", i), Form("Invariant Mass for centrality bin %i;p_{T};Entries", i), 5000, 0, 10);
-            fInvariantMassHists->CreateTH1(Form("hInvariantMass_%i", i), Form("Invariant Mass for centrality bin %i;p_{T};Entries", i), 5000, 0, 100);
+            fInvariantMassHists->CreateTH1(Form("hInvariantMassLow_%i", i), Form("Invariant Mass for centrality bin %i;p_{T};Entries", i), 10000, 0, 10);
+            fInvariantMassHists->CreateTH1(Form("hInvariantMass_%i", i), Form("Invariant Mass for centrality bin %i;p_{T};Entries", i), 10000, 0, 100);
             
             fInvariantMassHists->CreateTHnSparse(Form("hMixedEvent_%i", i), Form("Mixed Event Distributions for centrality bin %i;p_{T};#eta;#phi;Num Cl;",i), 4, bins, xmin, xmax);
         }
@@ -139,7 +139,7 @@ Double_t AliAnalysisTaskEmcalInvariantMass::CalculateInvariantMass(const TLorent
     Double_t deltaEta = clusterOne.Eta() - clusterTwo.Eta();
     Double_t deltaPhi = clusterOne.Phi() - clusterTwo.Phi();
     Double_t invariantMass = 2*clusterOne.Pt()*clusterTwo.Pt()*(TMath::CosH(deltaEta) - TMath::Cos(deltaPhi));
-    return invariantMass;
+    return TMath::Sqrt(invariantMass);
 }
 
 //________________________________________________________________________
@@ -292,7 +292,8 @@ void AliAnalysisTaskEmcalInvariantMass::ExecOnce() {
 //________________________________________________________________________
 Bool_t AliAnalysisTaskEmcalInvariantMass::Run()
 {
-    Printf("Inside invariant mass task!");
+    // TEMP
+    //Printf("Inside invariant mass task!");
     // Run analysis code here, if needed. It will be executed before FillHistograms().
 
     return kTRUE;  // If return kFALSE FillHistogram() will NOT be executed.
