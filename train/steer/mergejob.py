@@ -60,7 +60,7 @@ class Mergejob(object):
     def Submit(self):
         if not os.path.exists(self.__outputdir):
             os.makedirs(self.__outputdir, 0755)
-        cmd = "qsub -l \"projectio=1,h_vmem=4G\" %s %s %s " %(self.__BuildDependencyString(), self.__GetLogging(), self.__GetExecutable()) 
+        cmd = "qsub -l \"projectio=1,h_vmem=4G\" -P alice %s %s %s " %(self.__BuildDependencyString(), self.__GetLogging(), self.__GetExecutable()) 
         print "Submitting %s" %cmd
         self.__jid = DecodeSGEResponse(commands.getstatusoutput(cmd)[1])
         

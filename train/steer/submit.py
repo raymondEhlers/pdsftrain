@@ -28,7 +28,7 @@ class Submitter():
             jobs = int(self.GetNfiles()) / self.__splitlevel + 1
         for j in range(1, jobs+1):
             os.makedirs(os.path.join(self.__outputdir, "job%d" %j))
-        qsub = "qsub -l \"projectio=1,h_vmem=6G\" -t 1:%d" %jobs
+        qsub = "qsub -l \"projectio=1,h_vmem=6G\" -P alice -t 1:%d" %jobs
         qsub += " " + self.__GetLogging()
         qsub += " " + self.__GetExecutable()
         #print "Here I would do %s" %qsub
