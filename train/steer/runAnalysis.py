@@ -118,6 +118,7 @@ def CreateChain(filelist, treename):
 
 def CreateAnalysisManager():
     mgr = ROOT.AliAnalysisManager("MGR")
+    mgs.SetNSysInfo(1)                # switch on syswatch
     mgr.SetCommonFileName("AnalysisResults.root")
     return mgr
 
