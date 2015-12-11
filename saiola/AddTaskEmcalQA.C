@@ -65,7 +65,7 @@ void AddTaskEmcalQA()
   rhoTaskDCal->SetUseNewCentralityEstimation(kTRUE);
   rhoTaskDCal->SetNCentBins(5);
   rhoTaskDCal->GetJetContainer(0)->SetJetPtCut(0.1);
-  
+
   for (Int_t i = 0; i < kLastTrig; i++) {
     TString suffix;
 
@@ -74,7 +74,7 @@ void AddTaskEmcalQA()
     pTriggerQA->SetTrigClass(gCaloTriggerNames[i]);
     pTriggerQA->SetUseNewCentralityEstimation(kTRUE);
     pTriggerQA->SetNCentBins(5);
-    pTriggerQA->GetTriggerQA()->SetADCperBin(5);
+    pTriggerQA->SetADCperBin(5);
 
     if (1) {
       // QA task
@@ -102,7 +102,7 @@ void AddTaskEmcalQA()
       pQATaskAfter->GetClusterContainer(0)->SetClusPtCut(0.);
       pQATaskAfter->GetClusterContainer(0)->SetClusNonLinCorrEnergyCut(0.15);
       pQATaskAfter->SetDefaultClusterEnergy(AliVCluster::kNonLinCorr);
-      pQATaskAfter->SetHistoBins(100, 0, 100);
+      pQATaskAfter->SetHistoBins(150, 0, 150);
       pQATaskAfter->SetEMCalTriggerMode(AliAnalysisTaskEmcal::kNoSpecialTreatment);
       pQATaskAfter->SetTrigClass(gCaloTriggerNames[i]);
       pQATaskAfter->SetVzRange(-999,999);
@@ -117,6 +117,7 @@ void AddTaskEmcalQA()
 	pJFTask->SetVzRange(-999,999);
 	pJFTask->SetUseNewCentralityEstimation(kTRUE);
 	pJFTask->SetNCentBins(5);
+	pJFTask->SetHistoBins(200,0,200);
       }
 
       if (gCaloTriggerLabels[i] == "INT7" || gCaloTriggerLabels[i].BeginsWith("DMCE")) {
@@ -128,6 +129,7 @@ void AddTaskEmcalQA()
 	pJFTask->SetVzRange(-999,999);
 	pJFTask->SetUseNewCentralityEstimation(kTRUE);
 	pJFTask->SetNCentBins(5);
+	pJFTask->SetHistoBins(200,0,200);
       }
     }
   }
