@@ -143,8 +143,8 @@ def ReadFileList(inputfile, mymin, mymax):
 def runAnalysis(user, config, filelist, filemin, filemax):
     # Load additional libraries
     ROOT.gROOT.Macro("%s/train/macros/LoadLibs.C" %ConfigHandler.GetTrainRoot())
-    ROOT.gSystem.AddIncludePath("-I%s" %os.getenv("ALICE_ROOT"))
-    ROOT.gSystem.AddIncludePath("-I%s" %os.getenv("ALICE_PHYSICS"))
+    ROOT.gSystem.AddIncludePath("-I%s/include" %os.getenv("ALICE_ROOT"))
+    ROOT.gSystem.AddIncludePath("-I%s/include" %os.getenv("ALICE_PHYSICS"))
     
     mgr = CreateAnalysisManager()
     CreateHandlers()
