@@ -1,7 +1,7 @@
 {
     "NAME":"LHC15o_muon_calo_pass1",
     "YEAR":2015,
-    "SPLITLEVEL":150,
+    "SPLITLEVEL":20,
     "FILELISTS":[
         "PbPb/LHC15o/muon_calo_pass1/000244917.txt",
         "PbPb/LHC15o/muon_calo_pass1/000244918.txt",
