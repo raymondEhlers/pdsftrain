@@ -20,9 +20,9 @@ class Sample(object):
         self.__splitlevel = 10
         self.__filelists = []
         if filename:
-            self.__init(filename)
+            self.__Initialize(filename)
         
-    def Init(self, filename):
+    def __Initialize(self, filename):
         jsonstring = ""
         reader = open(filename)
         for line in reader:
@@ -33,7 +33,7 @@ class Sample(object):
             jsonstring += line
         reader.close()
         jsontree = json.loads(jsonstring)
-        for k, v in jsontree:
+        for k, v in jsontree.iteritems():
             if k.upper() == "NAME":
                 self.__name = str(v)
             elif k.upper() == "SPLITLEVEL":
