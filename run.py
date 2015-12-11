@@ -98,10 +98,9 @@ def main(argc, argv):
         
     ConfigHandler.LoadConfiguration(config)
     
-    if splitlevel < 0:
-        splitlevel = ConfigHandler.GetConfig().GetSplitLevel()
-
     if mode == "batch":
+        if splitlevel < 0:
+            splitlevel = ConfigHandler.GetConfig().GetSplitLevel()
         # prepare job submission
         workdir = GetWorkdir(False)
         if len(filelist): # run over one file
