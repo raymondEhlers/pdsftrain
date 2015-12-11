@@ -65,7 +65,7 @@ void AddTaskEmcalQA()
   rhoTaskDCal->SetUseNewCentralityEstimation(kTRUE);
   rhoTaskDCal->SetNCentBins(5);
   rhoTaskDCal->GetJetContainer(0)->SetJetPtCut(0.1);
-  
+
   for (Int_t i = 0; i < kLastTrig; i++) {
     TString suffix;
 
@@ -74,33 +74,35 @@ void AddTaskEmcalQA()
     pTriggerQA->SetTrigClass(gCaloTriggerNames[i]);
     pTriggerQA->SetUseNewCentralityEstimation(kTRUE);
     pTriggerQA->SetNCentBins(5);
-    pTriggerQA->GetTriggerQA()->SetADCperBin(5);
+    pTriggerQA->SetADCperBin(5);
 
     if (1) {
       // QA task
-      suffix = "BeforeTender_";
-      suffix += gCaloTriggerLabels[i];
-      AliAnalysisTaskSAQA *pQATaskBefore = AddTaskSAQA("", "CaloClusters", "EMCALCells", "", "",
-						       0, 0, 0, 0., 0., "TPC", suffix);
-      pQATaskBefore->GetClusterContainer(0)->SetClusECut(0.15);
-      pQATaskBefore->GetClusterContainer(0)->SetClusPtCut(0.);
-      pQATaskBefore->GetClusterContainer(0)->SetExoticCut(kFALSE);
-      pQATaskBefore->SetHistoBins(100, 0, 100);
-      pQATaskBefore->SetEMCalTriggerMode(AliAnalysisTaskEmcal::kNoSpecialTreatment);
-      pQATaskBefore->SetTrigClass(gCaloTriggerNames[i]);
-      pQATaskBefore->SetVzRange(-999,999);
-      pQATaskBefore->SetUseNewCentralityEstimation(kTRUE);
-      pQATaskBefore->SetNCentBins(5);
+      if (0) {
+	suffix = "BeforeTender_";
+	suffix += gCaloTriggerLabels[i];
+	AliAnalysisTaskSAQA *pQATaskBefore = AddTaskSAQA("", "CaloClusters", "EMCALCells", "", "",
+							 0, 0, 0, 0., 0., "TPC", suffix);
+	pQATaskBefore->GetClusterContainer(0)->SetClusECut(0.15);
+	pQATaskBefore->GetClusterContainer(0)->SetClusPtCut(0.);
+	pQATaskBefore->GetClusterContainer(0)->SetExoticCut(kFALSE);
+	pQATaskBefore->SetHistoBins(100, 0, 100);
+	pQATaskBefore->SetEMCalTriggerMode(AliAnalysisTaskEmcal::kNoSpecialTreatment);
+	pQATaskBefore->SetTrigClass(gCaloTriggerNames[i]);
+	pQATaskBefore->SetVzRange(-999,999);
+	pQATaskBefore->SetUseNewCentralityEstimation(kTRUE);
+	pQATaskBefore->SetNCentBins(5);
+      }
 
-      suffix = "AfterTender_";
-      suffix += gCaloTriggerLabels[i];
+      //suffix = "AfterTender_";
+      suffix = gCaloTriggerLabels[i];
       AliAnalysisTaskSAQA *pQATaskAfter = AddTaskSAQA("", "CaloClusters", "EMCALCells", "", "",
 						      0, 0, 0, 0., 0., "TPC", suffix);
       pQATaskAfter->GetClusterContainer(0)->SetClusECut(0.);
       pQATaskAfter->GetClusterContainer(0)->SetClusPtCut(0.);
       pQATaskAfter->GetClusterContainer(0)->SetClusNonLinCorrEnergyCut(0.15);
       pQATaskAfter->SetDefaultClusterEnergy(AliVCluster::kNonLinCorr);
-      pQATaskAfter->SetHistoBins(100, 0, 100);
+      pQATaskAfter->SetHistoBins(150, 0, 150);
       pQATaskAfter->SetEMCalTriggerMode(AliAnalysisTaskEmcal::kNoSpecialTreatment);
       pQATaskAfter->SetTrigClass(gCaloTriggerNames[i]);
       pQATaskAfter->SetVzRange(-999,999);
@@ -108,14 +110,14 @@ void AddTaskEmcalQA()
       pQATaskAfter->SetNCentBins(5);
 
       if (gCaloTriggerLabels[i] == "INT7" || gCaloTriggerLabels[i].BeginsWith("EMCE")) {
-	suffix = "_";
-	suffix += gCaloTriggerLabels[i];
+	suffix = gCaloTriggerLabels[i];
 	AliAnalysisTaskSAJF *pJFTask = AddTaskSAJF("", "CaloClusters", aktJetTask->GetName(), "NeutralRhoDCal", 0.2, 1, 0., "EMCALfid", 0, suffix);
 	pJFTask->SetEMCalTriggerMode(AliAnalysisTaskEmcal::kNoSpecialTreatment);
 	pJFTask->SetTrigClass(gCaloTriggerNames[i]);
 	pJFTask->SetVzRange(-999,999);
 	pJFTask->SetUseNewCentralityEstimation(kTRUE);
 	pJFTask->SetNCentBins(5);
+	pJFTask->SetHistoBins(200,0,200);
       }
 
       if (gCaloTriggerLabels[i] == "INT7" || gCaloTriggerLabels[i].BeginsWith("DMCE")) {
@@ -127,6 +129,7 @@ void AddTaskEmcalQA()
 	pJFTask->SetVzRange(-999,999);
 	pJFTask->SetUseNewCentralityEstimation(kTRUE);
 	pJFTask->SetNCentBins(5);
+	pJFTask->SetHistoBins(200,0,200);
       }
     }
   }
