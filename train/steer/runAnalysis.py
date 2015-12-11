@@ -118,7 +118,7 @@ def CreateChain(filelist, treename):
 
 def CreateAnalysisManager():
     mgr = ROOT.AliAnalysisManager("MGR")
-    mgs.SetNSysInfo(1)                # switch on syswatch
+    mgr.SetNSysInfo(1)                # switch on syswatch
     mgr.SetCommonFileName("AnalysisResults.root")
     return mgr
 
@@ -176,6 +176,13 @@ def runAnalysis(user, config, filelist, filemin, filemax):
     if mgr.InitAnalysis():
         mgr.PrintStatus()
         mgr.StartAnalysis("local", CreateChain(files, ConfigHandler.GetConfig().GetTreename()))
+        
+    if os.path.exists(os.path.join(os.getcwd(), "syswatch.log")):
+        # create syswatch.root file
+        syswatchwriter = ROOT.TFile("syswatch.root", "RECREATE")
+        syswatchwriter.cd()
+        ROOT.AliSysInfo.MakeTree(os.path.join(os.getcwd(), "syswatch.log")).Write()
+        syswatchwriter.Close()
 
 if __name__ == "__main__":
     ConfigHandler.SetTrainRoot(os.environ["TRAIN_ROOT"])
