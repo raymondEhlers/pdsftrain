@@ -7,11 +7,11 @@ void AddEmcalPreparationTasks()
   gROOT->LoadMacro(Form("%s/PWG/EMCAL/macros/AddTaskEmcalSetup.C", gSystem->Getenv("ALICE_PHYSICS")));
   AliEmcalSetupTask *setupTask = AddTaskEmcalSetup();
   if(TString(gSystem->Getenv("NERSC_HOST")).Contains("pdsf")){
-          printf("Using OCDB from cvmfs");
-          setupTask->SetOcdbPath("local:///cvmfs/alice-ocdb.cern.ch/calibration/data/2015/OCDB");
+    printf("Using OCDB from cvmfs");
+    setupTask->SetOcdbPath("local:///cvmfs/alice-ocdb.cern.ch/calibration/data/2015/OCDB");
   } else { 
-          printf("Using raw OCDB\n");
-          setupTask->SetOcdbPath("raw://");
+    printf("Using raw OCDB\n");
+    setupTask->SetOcdbPath("raw://");
   }
 
   gROOT->LoadMacro("$ALICE_PHYSICS/OADB/COMMON/MULTIPLICITY/macros/AddTaskMultSelection.C");
@@ -24,8 +24,8 @@ void AddEmcalPreparationTasks()
   Bool_t  bRemExoticCell   = kFALSE;
   Bool_t  bRemExoticClus   = kFALSE;
   Bool_t  bFidRegion       = kFALSE;
-  Bool_t  bCalibEnergy     = kTRUE;
-  Bool_t  bCalibTime       = kTRUE;
+  Bool_t  bCalibEnergy     = kFALSE;
+  Bool_t  bCalibTime       = kFALSE;
   Bool_t  bRemBC           = kTRUE;
   UInt_t  iNonLinFunct     = AliEMCALRecoUtils::kNoCorrection;
   Bool_t  bReclusterize    = kFALSE;
@@ -50,7 +50,7 @@ void AddEmcalPreparationTasks()
 										kFALSE, kFALSE, AliAnalysisTaskEMCALClusterizeFast::kFEEData);
 
   gROOT->LoadMacro("$ALICE_PHYSICS/PWG/EMCAL/macros/AddTaskEmcalTriggerMakerNew.C");
-  AliEmcalTriggerMakerTask *triggermaker = AddTaskEmcalTriggerMakerNew("EmcalTriggers",0,0,"AliEmcalTriggerMaker",8,0,0,0,0,0,0,0,0,0,0,0,0,0,1);
+  AliEmcalTriggerMakerTask *triggermaker = AddTaskEmcalTriggerMakerNew("EmcalTriggers",0,0,"AliEmcalTriggerMaker",8,0,0,0,0,0,0,0,0,0,0,0,0,kFALSE,kTRUE);
   triggermaker->SetUseTriggerBitConfig(AliEmcalTriggerMaker::kNewConfig);
   triggermaker->SetUseNewCentralityEstimation(kTRUE);
   triggermaker->SetNCentBins(5);
