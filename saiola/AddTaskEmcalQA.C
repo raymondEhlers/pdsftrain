@@ -78,22 +78,24 @@ void AddTaskEmcalQA()
 
     if (1) {
       // QA task
-      suffix = "BeforeTender_";
-      suffix += gCaloTriggerLabels[i];
-      AliAnalysisTaskSAQA *pQATaskBefore = AddTaskSAQA("", "CaloClusters", "EMCALCells", "", "",
-						       0, 0, 0, 0., 0., "TPC", suffix);
-      pQATaskBefore->GetClusterContainer(0)->SetClusECut(0.15);
-      pQATaskBefore->GetClusterContainer(0)->SetClusPtCut(0.);
-      pQATaskBefore->GetClusterContainer(0)->SetExoticCut(kFALSE);
-      pQATaskBefore->SetHistoBins(100, 0, 100);
-      pQATaskBefore->SetEMCalTriggerMode(AliAnalysisTaskEmcal::kNoSpecialTreatment);
-      pQATaskBefore->SetTrigClass(gCaloTriggerNames[i]);
-      pQATaskBefore->SetVzRange(-999,999);
-      pQATaskBefore->SetUseNewCentralityEstimation(kTRUE);
-      pQATaskBefore->SetNCentBins(5);
+      if (0) {
+	suffix = "BeforeTender_";
+	suffix += gCaloTriggerLabels[i];
+	AliAnalysisTaskSAQA *pQATaskBefore = AddTaskSAQA("", "CaloClusters", "EMCALCells", "", "",
+							 0, 0, 0, 0., 0., "TPC", suffix);
+	pQATaskBefore->GetClusterContainer(0)->SetClusECut(0.15);
+	pQATaskBefore->GetClusterContainer(0)->SetClusPtCut(0.);
+	pQATaskBefore->GetClusterContainer(0)->SetExoticCut(kFALSE);
+	pQATaskBefore->SetHistoBins(100, 0, 100);
+	pQATaskBefore->SetEMCalTriggerMode(AliAnalysisTaskEmcal::kNoSpecialTreatment);
+	pQATaskBefore->SetTrigClass(gCaloTriggerNames[i]);
+	pQATaskBefore->SetVzRange(-999,999);
+	pQATaskBefore->SetUseNewCentralityEstimation(kTRUE);
+	pQATaskBefore->SetNCentBins(5);
+      }
 
-      suffix = "AfterTender_";
-      suffix += gCaloTriggerLabels[i];
+      //suffix = "AfterTender_";
+      suffix = gCaloTriggerLabels[i];
       AliAnalysisTaskSAQA *pQATaskAfter = AddTaskSAQA("", "CaloClusters", "EMCALCells", "", "",
 						      0, 0, 0, 0., 0., "TPC", suffix);
       pQATaskAfter->GetClusterContainer(0)->SetClusECut(0.);
@@ -108,8 +110,7 @@ void AddTaskEmcalQA()
       pQATaskAfter->SetNCentBins(5);
 
       if (gCaloTriggerLabels[i] == "INT7" || gCaloTriggerLabels[i].BeginsWith("EMCE")) {
-	suffix = "_";
-	suffix += gCaloTriggerLabels[i];
+	suffix = gCaloTriggerLabels[i];
 	AliAnalysisTaskSAJF *pJFTask = AddTaskSAJF("", "CaloClusters", aktJetTask->GetName(), "NeutralRhoDCal", 0.2, 1, 0., "EMCALfid", 0, suffix);
 	pJFTask->SetEMCalTriggerMode(AliAnalysisTaskEmcal::kNoSpecialTreatment);
 	pJFTask->SetTrigClass(gCaloTriggerNames[i]);
