@@ -97,9 +97,9 @@ void AliAnalysisTaskEmcalInvariantMass::UserCreateOutputObjects()
 
     fInvariantMassHists = new THistManager("InvariantMass");
 
-    Int_t bins[4] = {150, 50, 20, 50};
+    Int_t bins[4] = {100, 50, 50, 50};
     Double_t xmin[4] = {0., -5, -5, 0.};
-    Double_t xmax[4] = {150., 5, 5, 5000.};
+    Double_t xmax[4] = {100., 5, 5, 5000.};
 
     for (Int_t i = 0; i < fNcentBins; i++) {
         /*if (fParticleCollArray.GetEntriesFast()>0) {
