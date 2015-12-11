@@ -18,6 +18,8 @@ void AddTaskInvariantMass()
         TString clustersName = "CaloClusters";
         gROOT->LoadMacro(Form("%s/rehlers/AddTaskEmcalInvariantMass.C", trainRoot));
         AliAnalysisTaskEmcalInvariantMass* anaTask = AddTaskEmcalInvariantMass(/*tracksName,*/clustersName, 1);
+        anaTask->SetUseNewCentralityEstimation(kTRUE);
+        anaTask->SetNCentBins(4);
     }
 
     else
