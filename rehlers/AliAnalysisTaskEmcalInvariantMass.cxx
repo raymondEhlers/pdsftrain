@@ -97,10 +97,6 @@ void AliAnalysisTaskEmcalInvariantMass::UserCreateOutputObjects()
 
     fInvariantMassHists = new THistManager("InvariantMass");
 
-    Int_t bins[4] = {100, 50, 50, 50};
-    Double_t xmin[4] = {0., -5, -5, 0.};
-    Double_t xmax[4] = {100., 5, 5, 5000.};
-
     for (Int_t i = 0; i < fNcentBins; i++) {
         /*if (fParticleCollArray.GetEntriesFast()>0) {
           histname = "fHistTracksPt_";
@@ -115,9 +111,13 @@ void AliAnalysisTaskEmcalInvariantMass::UserCreateOutputObjects()
             fInvariantMassHists->CreateTH1(Form("hInvariantMassLow_%i", i), Form("Invariant Mass for centrality bin %i;p_{T};Entries", i), 10000, 0, 10);
             fInvariantMassHists->CreateTH1(Form("hInvariantMass_%i", i), Form("Invariant Mass for centrality bin %i;p_{T};Entries", i), 10000, 0, 100);
             
-            fInvariantMassHists->CreateTHnSparse(Form("hMixedEvent_%i", i), Form("Mixed Event Distributions for centrality bin %i;p_{T};#eta;#phi;Num Cl;",i), 4, bins, xmin, xmax);
         }
     }
+
+    Int_t bins[4] = {100, 50, 50, 50};
+    Double_t xmin[4] = {0., -5, -5, 0.};
+    Double_t xmax[4] = {100., 5, 5, 5000.};
+    fInvariantMassHists->CreateTHnSparse("hMixedEvent", "Mixed Event Distributions;p_{T};#eta;#phi;Num Cl;", 4, bins, xmin, xmax);
 
     /*histname = "fHistPtDEtaDPhiTrackClus";
       fHistPtDEtaDPhiTrackClus = new TH3F(histname.Data(),Form("%s;#it{p}_{T}^{track};#Delta#eta;#Delta#varphi",histname.Data()),100,0.,100.,100,-0.1,0.1,100,-0.1,0.1);
