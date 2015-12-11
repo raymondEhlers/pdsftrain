@@ -2,3 +2,6 @@
 *.root
 *.d
 *.so
+*.swp
+.project
+.pydevproject
