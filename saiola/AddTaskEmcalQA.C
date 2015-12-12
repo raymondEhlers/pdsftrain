@@ -119,7 +119,7 @@ void AddTaskEmcalQA()
 	pJFTask->SetVzRange(-999,999);
 	pJFTask->SetUseNewCentralityEstimation(kTRUE);
 	pJFTask->SetNCentBins(5);
-	pJFTask->SetHistoBins(150,0,75);
+	pJFTask->SetHistoBins(75,0,150);
       }
 
       if (gCaloTriggerLabels[i] == "INT7" || gCaloTriggerLabels[i].BeginsWith("DMCE")) {
@@ -131,7 +131,7 @@ void AddTaskEmcalQA()
 	pJFTask->SetVzRange(-999,999);
 	pJFTask->SetUseNewCentralityEstimation(kTRUE);
 	pJFTask->SetNCentBins(5);
-	pJFTask->SetHistoBins(150,0,75);
+	pJFTask->SetHistoBins(75,0,150);
       }
     }
   }
