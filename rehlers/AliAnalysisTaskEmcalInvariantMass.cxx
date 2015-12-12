@@ -184,7 +184,8 @@ Bool_t AliAnalysisTaskEmcalInvariantMass::FillHistograms()
             
             // Fill mixed event histogram
             Double_t val[4] = {vectorOne.Pt(), vectorOne.Eta(), vectorOne.Phi(), numClusters};
-            fInvariantMassHists->FillTHnSparse(Form("hMixedEvent_%i", fCentBin), val);
+            fInvariantMassHists->FillTHnSparse("hMixedEvent", val);
+            //fInvariantMassHists->FillTHnSparse(Form("hMixedEvent_%i", fCentBin), val);
             
             // Fill invariant mass histogram
             for (Int_t j = i+1; j < numClusters; j++)
