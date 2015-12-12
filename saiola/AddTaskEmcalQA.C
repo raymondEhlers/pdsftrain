@@ -59,11 +59,13 @@ void AddTaskEmcalQA()
   AliAnalysisTaskRho* rhoTaskEMCal = AddTaskRho(ktJetTask->GetName(), "", "CaloClusters", "NeutralRhoEMCal", 0.2, "EMCAL", 0.01, 0, 0, 1, kTRUE, "EMCal");
   rhoTaskEMCal->SetUseNewCentralityEstimation(kTRUE);
   rhoTaskEMCal->SetNCentBins(5);
+  rhoTaskEMCal->SetHistoBins(50, 0, 100);
   rhoTaskEMCal->GetJetContainer(0)->SetJetPtCut(0.1);
 
   AliAnalysisTaskRho* rhoTaskDCal = AddTaskRho(ktJetTask->GetName(), "", "CaloClusters", "NeutralRhoDCal", 0.2, "DCAL", 0.01, 0, 0, 1, kTRUE, "DCal");
   rhoTaskDCal->SetUseNewCentralityEstimation(kTRUE);
   rhoTaskDCal->SetNCentBins(5);
+  rhoTaskDCal->SetHistoBins(50, 0, 100);
   rhoTaskDCal->GetJetContainer(0)->SetJetPtCut(0.1);
 
   for (Int_t i = 0; i < kLastTrig; i++) {
@@ -74,7 +76,7 @@ void AddTaskEmcalQA()
     pTriggerQA->SetTrigClass(gCaloTriggerNames[i]);
     pTriggerQA->SetUseNewCentralityEstimation(kTRUE);
     pTriggerQA->SetNCentBins(5);
-    pTriggerQA->SetADCperBin(5);
+    pTriggerQA->SetADCperBin(10);
 
     if (1) {
       // QA task
@@ -102,7 +104,7 @@ void AddTaskEmcalQA()
       pQATaskAfter->GetClusterContainer(0)->SetClusPtCut(0.);
       pQATaskAfter->GetClusterContainer(0)->SetClusNonLinCorrEnergyCut(0.15);
       pQATaskAfter->SetDefaultClusterEnergy(AliVCluster::kNonLinCorr);
-      pQATaskAfter->SetHistoBins(150, 0, 150);
+      pQATaskAfter->SetHistoBins(100, 0, 100);
       pQATaskAfter->SetEMCalTriggerMode(AliAnalysisTaskEmcal::kNoSpecialTreatment);
       pQATaskAfter->SetTrigClass(gCaloTriggerNames[i]);
       pQATaskAfter->SetVzRange(-999,999);
@@ -117,7 +119,7 @@ void AddTaskEmcalQA()
 	pJFTask->SetVzRange(-999,999);
 	pJFTask->SetUseNewCentralityEstimation(kTRUE);
 	pJFTask->SetNCentBins(5);
-	pJFTask->SetHistoBins(200,0,200);
+	pJFTask->SetHistoBins(150,0,75);
       }
 
       if (gCaloTriggerLabels[i] == "INT7" || gCaloTriggerLabels[i].BeginsWith("DMCE")) {
@@ -129,7 +131,7 @@ void AddTaskEmcalQA()
 	pJFTask->SetVzRange(-999,999);
 	pJFTask->SetUseNewCentralityEstimation(kTRUE);
 	pJFTask->SetNCentBins(5);
-	pJFTask->SetHistoBins(200,0,200);
+	pJFTask->SetHistoBins(150,0,75);
       }
     }
   }
