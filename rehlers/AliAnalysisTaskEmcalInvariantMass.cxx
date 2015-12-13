@@ -97,6 +97,11 @@ void AliAnalysisTaskEmcalInvariantMass::UserCreateOutputObjects()
 
     fInvariantMassHists = new THistManager("InvariantMass");
 
+    Double_t * invariantMassLowBins = GenerateFixedBinArray(10000, 0, 10);
+    Double_t * invariantMassBins = GenerateFixedBinArray(10000, 0, 100);
+    Double_t energyBins[] = {0, 5, 10, 15, 20, 100};
+    Double_t clusterMultBins[] = {0, 500, 1000, 1500, 2000, 2500, 3000, 10000};
+
     for (Int_t i = 0; i < fNcentBins; i++) {
         /*if (fParticleCollArray.GetEntriesFast()>0) {
           histname = "fHistTracksPt_";
@@ -108,9 +113,8 @@ void AliAnalysisTaskEmcalInvariantMass::UserCreateOutputObjects()
           }*/
 
         if (fClusterCollArray.GetEntriesFast()>0) {
-            fInvariantMassHists->CreateTH1(Form("hInvariantMassLow_%i", i), Form("Invariant Mass for centrality bin %i;p_{T};Entries", i), 10000, 0, 10);
-            fInvariantMassHists->CreateTH1(Form("hInvariantMass_%i", i), Form("Invariant Mass for centrality bin %i;p_{T};Entries", i), 10000, 0, 100);
-            
+            fInvariantMassHists->CreateTH3(Form("hInvariantMassLowVsPairEVsMult_%i", i), Form("Invariant Mass vs Pair Energy vs Cluster Mult for centrality bin %i;p_{T};E_{pair};N_{cluster}", i), 10000, invariantMassBins, 6, energyBins, 8, clusterMultBins);
+            fInvariantMassHists->CreateTH3(Form("hInvariantMassVsPairEVsMult_%i", i), Form("Invariant Mass vs Pair Energy vs Cluster Mult for centrality bin %i;p_{T};E_{pair};N_{cluster}", i), 10000, invariantMassBins, 6, energyBins, 8, clusterMultBins);
         }
     }
 
@@ -169,6 +173,7 @@ Bool_t AliAnalysisTaskEmcalInvariantMass::FillHistograms()
         AliVCluster * clusterTwo = 0;
         TLorentzVector vectorOne;
         TLorentzVector vectorTwo;
+        TLorentzVector pairFourVector;
         Int_t numClusters = fCaloClustersCont->GetNClusters();
         for (Int_t i = 0; i < numClusters; i++)
         {
@@ -184,8 +189,12 @@ Bool_t AliAnalysisTaskEmcalInvariantMass::FillHistograms()
             
             // Fill mixed event histogram
             Double_t val[4] = {vectorOne.Pt(), vectorOne.Eta(), vectorOne.Phi(), numClusters};
-            fInvariantMassHists->FillTHnSparse("hMixedEvent", val);
-            //fInvariantMassHists->FillTHnSparse(Form("hMixedEvent_%i", fCentBin), val);
+            // Only sample, rather than taking all events
+            // Perhaps set this to some different number
+            //if ((THnSparseD * fInvariantMassHists->FindObject("hMixedEvent"))->GetEntries() < 10000)
+            //{
+                fInvariantMassHists->FillTHnSparse("hMixedEvent", val);
+            //}
             
             // Fill invariant mass histogram
             for (Int_t j = i+1; j < numClusters; j++)
@@ -199,13 +208,14 @@ Bool_t AliAnalysisTaskEmcalInvariantMass::FillHistograms()
                 fCaloClustersCont->GetMomentum(vectorTwo, j);
 
                 // Fill invariant mass histogram
-                fInvariantMassHists->FillTH1(Form("hInvariantMassLow_%i", fCentBin), CalculateInvariantMass(vectorOne, vectorTwo));
-                fInvariantMassHists->FillTH1(Form("hInvariantMass_%i", fCentBin), CalculateInvariantMass(vectorOne, vectorTwo));
+                fInvariantMassHists->FillTH3(Form("hInvariantMassLowVsPairE_%i", fCentBin), CalculateInvariantMass(vectorOne, vectorTwo), pairFourVector.E(), numClusters);
+                fInvariantMassHists->FillTH3(Form("hInvariantMassVsPairE_%i", fCentBin), CalculateInvariantMass(vectorOne, vectorTwo), pairFourVector.E(), numClusters);
             }
 
             // Reset the vector
             vectorOne.SetPxPyPzE(0,0,0,0);
             vectorTwo.SetPxPyPzE(0,0,0,0);
+            pairFourVector.SetPxPyPzE(0,0,0,0);
         }
     }
 
